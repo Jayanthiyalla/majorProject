@@ -25,7 +25,7 @@
           
         /* Top Bar Styles */
         .top-bar {
-            background-color: #2c3e50;
+            background-color: grey;
             text-align: center;
             width: 100%;
             display: flex;
@@ -217,8 +217,8 @@
         
         /* Footer Styles */
         .site-footer {
-            background-color: #2c3e50;
-            color: white;
+            background-color: white;
+            color: black;
             padding: 25px 0;
             text-align: center;
             width: 100%;
@@ -234,6 +234,9 @@
         .footer-bar a:hover {
             color: #2980b9;
             text-decoration: underline;
+        }
+        .login-box:nth-child(4) {
+            border-color: #9b59b6; /* External - Purple */
         }
         
         /* Responsive Styles */
@@ -330,6 +333,9 @@
                     <input type="password" name="password" placeholder="Password" required>
                     <input type="hidden" name="role" value="admin">
                     <button type="submit">Login <i class="fas fa-arrow-right"></i></button>
+                    <a href="#" class="forgot-password" data-bs-toggle="modal" data-bs-target="#resetModal" data-role="admin">
+                        <i class="fas fa-key"></i> Forgot Password?
+                    </a>
                 </form>
             </div>
             <div class="login-box">
@@ -339,6 +345,9 @@
                     <input type="password" name="password" placeholder="Password" required>
                     <input type="hidden" name="role" value="student">
                     <button type="submit">Login <i class="fas fa-arrow-right"></i></button>
+                    <a href="#" class="forgot-password" data-bs-toggle="modal" data-bs-target="#resetModal" data-role="student">
+                        <i class="fas fa-key"></i> Forgot Password?
+                    </a>
                 </form>
             </div>
             <div class="login-box">
@@ -348,10 +357,56 @@
                     <input type="password" name="password" placeholder="Password" required>
                     <input type="hidden" name="role" value="faculty">
                     <button type="submit">Login <i class="fas fa-arrow-right"></i></button>
+                    <a href="#" class="forgot-password" data-bs-toggle="modal" data-bs-target="#resetModal" data-role="faculty">
+                        <i class="fas fa-key"></i> Forgot Password?
+                    </a>
                 </form>
             </div>
+            <!-- In the login-container div, add this new login box after the faculty login -->
+<div class="login-box">
+    <h2><i class="fas fa-user-tie"></i> External Login</h2>
+    <form action="./app/login.php" method="POST">
+        <input type="text" name="username" placeholder="External ID" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <input type="hidden" name="role" value="external">
+        <button type="submit">Login <i class="fas fa-arrow-right"></i></button>
+        <a href="#" class="forgot-password" data-bs-toggle="modal" data-bs-target="#resetModal" data-role="external">
+            <i class="fas fa-key"></i> Forgot Password?
+        </a>
+    </form>
+</div>
         </div>
     </main>
+    <div class="modal fade" id="resetModal" tabindex="-1" aria-labelledby="resetModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resetModalLabel"><i class="fas fa-key"></i> Reset Password</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="reset-form" id="resetPasswordForm" method="POST" action="./app/reset_password.php">
+                        <input type="hidden" id="resetRole" name="role">
+                        <div class="mb-3">
+                            <label for="resetUsername" class="form-label">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" id="resetUsername" name="username" placeholder="Enter your username" required>
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-reset">
+                                <i class="fas fa-paper-plane"></i> Reset Password
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <!-- Footer -->
     <footer class="site-footer">
@@ -367,5 +422,36 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showLoginPage() {
+            document.getElementById('main-content').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'flex';
+        }
+        
+        // Set the role in the reset modal when a forgot password link is clicked
+        document.addEventListener('DOMContentLoaded', function() {
+            var resetModal = document.getElementById('resetModal');
+            resetModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget; // Button that triggered the modal
+                var role = button.getAttribute('data-role'); // Extract info from data-* attributes
+                var modalTitle = resetModal.querySelector('.modal-title');
+                
+                // Update the modal content based on the role
+                document.getElementById('resetRole').value = role;
+                
+                // Change the title based on role
+                if (role === 'admin') {
+                    modalTitle.innerHTML = '<i class="fas fa-user-shield"></i> Admin Password Reset';
+                } else if (role === 'student') {
+                    modalTitle.innerHTML = '<i class="fas fa-user-graduate"></i> Student Password Reset';
+                } else if (role === 'faculty') {
+                    modalTitle.innerHTML = '<i class="fas fa-chalkboard-teacher"></i> Faculty Password Reset';
+                }
+                else if (role === 'external') {
+                    modalTitle.innerHTML = '<i class="fas fa-user-tie"></i> External Password Reset';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
